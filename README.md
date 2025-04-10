@@ -33,7 +33,7 @@ A fun and interactive Memory Matching Game built using **React** with a beautifu
 1. **Clone the repository:**
 
 ```bash
-git clone https://github.com/yourusername/memory-game.git
+git clone https://github.com/Soumyadip77777/Memory-Game
 cd memory-game
 Install dependencies:
 
