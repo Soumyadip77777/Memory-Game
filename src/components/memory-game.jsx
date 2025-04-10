@@ -20,11 +20,6 @@ const MemoryGame = () => {
   const moveSound = useRef(null);
   const winSound = useRef(null);
 
-  const handleGridSizeChange = (e) => {
-    const size = parseInt(e.target.value);
-    if (size >= 2 && size <= 10) setGridSize(size);
-  };
-
   const initializeGame = () => {
     const totalCards = gridSize * gridSize;
     const pairCount = Math.floor(totalCards / 2);
@@ -132,28 +127,42 @@ const MemoryGame = () => {
       <audio ref={moveSound} src="/move.mp3" preload="auto" />
       <audio ref={winSound} src="/win.wav" preload="auto" />
 
-      <h1 className="text-4xl font-extrabold mb-6 text-cyan-400 drop-shadow-lg">
+      <h1 className="text-4xl font-extrabold mb-6 text-cyan-400 drop-shadow-lg text-center">
         🧠 Memory Game
       </h1>
 
-      <div className="flex gap-4 mb-6">
-        <label htmlFor="gridSize" className="font-semibold text-lg">
-          Grid Size (2-10):
-        </label>
-        <input
-          id="gridSize"
-          type="number"
-          min="2"
-          max="10"
-          value={gridSize}
-          onChange={handleGridSizeChange}
-          className="bg-gray-800 text-white border border-gray-600 rounded px-3 py-1 w-16"
-        />
+      {/* Grid Size Control with Buttons */}
+      <div className="flex items-center gap-4 mb-6">
+        <span className="font-semibold text-lg">Grid Size:</span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => gridSize > 2 && setGridSize(gridSize - 1)}
+            className="bg-gray-700 text-white px-3 py-1 rounded-full text-xl font-bold hover:bg-gray-600 disabled:opacity-50"
+            disabled={gridSize <= 2}
+          >
+            −
+          </button>
+          <span className="text-xl font-semibold w-10 text-center">
+            {gridSize}
+          </span>
+          <button
+            onClick={() => gridSize < 10 && setGridSize(gridSize + 1)}
+            className="bg-gray-700 text-white px-3 py-1 rounded-full text-xl font-bold hover:bg-gray-600 disabled:opacity-50"
+            disabled={gridSize >= 10}
+          >
+            +
+          </button>
+        </div>
       </div>
 
+      {/* Stats */}
       <div className="mb-6 text-center space-y-2">
-        <p className="text-lg">Moves: <span className="font-bold text-amber-400">{moves}</span></p>
-        <p className="text-lg">Time: <span className="font-bold text-emerald-400">{timer}s</span></p>
+        <p className="text-lg">
+          Moves: <span className="font-bold text-amber-400">{moves}</span>
+        </p>
+        <p className="text-lg">
+          Time: <span className="font-bold text-emerald-400">{timer}s</span>
+        </p>
         {bestStats[gridSize] && (
           <div className="text-sm text-pink-400 font-semibold space-y-1">
             <p>Best Moves: {bestStats[gridSize].bestScore}</p>
@@ -162,18 +171,18 @@ const MemoryGame = () => {
         )}
       </div>
 
+      {/* Game Grid */}
       <div
-        className="grid gap-3 mb-6"
+        className="grid gap-2 mb-6 w-full max-w-screen-sm"
         style={{
           gridTemplateColumns: `repeat(${gridSize}, minmax(0, 1fr))`,
-          width: `min(100%, ${gridSize * 5.5}rem)`,
         }}
       >
         {cards.map((card) => (
           <div
             key={card.id}
             onClick={() => handleClick(card.id)}
-            className={`aspect-square flex items-center justify-center text-2xl font-bold rounded-xl cursor-pointer transition duration-300 transform 
+            className={`aspect-square flex items-center justify-center text-xl sm:text-2xl font-bold rounded-xl cursor-pointer transition duration-300 transform 
               ${
                 isFlipped(card.id)
                   ? isSolved(card.id)
@@ -187,12 +196,14 @@ const MemoryGame = () => {
         ))}
       </div>
 
+      {/* Win message */}
       {won && (
         <div className="text-3xl font-bold text-amber-400 animate-bounce mb-6">
           🎉 You Won!
         </div>
       )}
 
+      {/* Reset Button */}
       <button
         onClick={initializeGame}
         className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-semibold rounded-full shadow-md hover:scale-105 transition"
